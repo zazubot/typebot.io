@@ -2,12 +2,14 @@ name: Release new Zazubot version
 
 on:
   push:
-    tags: ["v*", "next"]
+    branchs: ["main"]
 
 jobs:
   build-amd:
     env:
       DATABASE_URL: "postgresql://"
+      NEXT_PUBLIC_TOLGEE_API_KEY: ${{ secrets.NEXT_PUBLIC_TOLGEE_API_KEY }}
+      NEXT_PUBLIC_TOLGEE_API_URL: ${{ secrets.NEXT_PUBLIC_TOLGEE_API_URL }}
     strategy:
       matrix:
         app: ["builder", "viewer"]

@@ -68,8 +68,8 @@ jobs:
     strategy:
       matrix:
         app: ["builder", "viewer"]
-    # runs-on: buildjet-8vcpu-ubuntu-2204-arm
-    runs-on: ubuntu-latest
+    runs-on: buildjet-4vcpu-ubuntu-2204-arm
+    # runs-on: ubuntu-latest
     steps:
       - name: Check out the repo
         uses: actions/checkout@v4

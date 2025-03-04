@@ -10,7 +10,6 @@ env:
   DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
   DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
   REGISTRY: docker.io
-  IMAGE_NAME: ahmedkhaled4d/zazubot-${{ matrix.app }}
 
 jobs:
   build-and-push:
@@ -44,7 +43,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ${{ env.IMAGE_NAME }}
+          images: ahmedkhaled4d/zazubot-${{ matrix.app }}
           tags: |
             type=ref,event=branch
             type=ref,event=pr
@@ -76,12 +75,12 @@ jobs:
       - name: Create and push multi-arch manifest
         run: |
           # Create multi-arch manifest
-          docker manifest create ${{ env.IMAGE_NAME }}:${{ github.ref_name }} \
-            ${{ env.IMAGE_NAME }}:${{ github.ref_name }}-amd64 \
-            ${{ env.IMAGE_NAME }}:${{ github.ref_name }}-arm64
+          docker manifest create ahmedkhaled4d/zazubot-${{ matrix.app }}:${{ github.ref_name }} \
+            ahmedkhaled4d/zazubot-${{ matrix.app }}:${{ github.ref_name }}-amd64 \
+            ahmedkhaled4d/zazubot-${{ matrix.app }}:${{ github.ref_name }}-arm64
 
           # Push the manifest
-          docker manifest push ${{ env.IMAGE_NAME }}:${{ github.ref_name }}
+          docker manifest push ahmedkhaled4d/zazubot-${{ matrix.app }}:${{ github.ref_name }}
 
   create-release:
     if: startsWith(github.ref, 'refs/tags/v')

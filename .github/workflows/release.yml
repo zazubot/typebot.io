@@ -2,7 +2,7 @@ name: Release new Typebot version
 
 on:
   push:
-    tags: ["v*", "next"]
+    tags: ["main"]
 
 jobs:
   build-amd:

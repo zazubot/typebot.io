@@ -1,105 +1,178 @@
-name: Build and Publish Multi-Arch Docker Images
+name: Release new zazubot version
 
 on:
   push:
-    branches:
-      - main
-
-env:
-  # Configure these variables as needed
-  DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-  DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-  REGISTRY: docker.io
+    tags: ["v*", "next"]
 
 jobs:
-  build-and-push:
-    runs-on: ubuntu-latest
+  build-amd:
     env:
       DATABASE_URL: "postgresql://"
-      NEXT_PUBLIC_TOLGEE_API_URL: ${{ secrets.NEXT_PUBLIC_TOLGEE_API_URL }}
-      NEXT_PUBLIC_TOLGEE_API_KEY: ${{ secrets.NEXT_PUBLIC_TOLGEE_API_KEY }}
     strategy:
       matrix:
         app: ["builder", "viewer"]
-        include:
-          - platform: linux/amd64
-            runner: ubuntu-latest
-          - platform: linux/arm64
-            runner: buildjet-8vcpu-ubuntu-2204-arm
-
+    runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
+      - name: Check out the repo
         uses: actions/checkout@v4
 
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
+      - name: Extract existing image metadata
+        id: image-meta
+        uses: docker/metadata-action@v4
+        with:
+          images: ahmedkhaled4d/zazubot-${{ matrix.app }}
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+        uses: docker/setup-buildx-action@v2
 
-      - name: Login to Docker Hub
-        uses: docker/login-action@v3
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
         with:
-          username: ${{ env.DOCKER_USERNAME }}
-          password: ${{ env.DOCKER_PASSWORD }}
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
 
+      - name: Build image
+        id: docker_build
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          labels: ${{ steps.image-meta.outputs.labels }}
+          platforms: linux/amd64
+          cache-from: type=gha,scope=${{ matrix.app }}-amd
+          cache-to: type=gha,scope=${{ matrix.app }}-amd,mode=max
+          build-args: |
+            SCOPE=${{ matrix.app }}
+          outputs: type=image,name=ahmedkhaled4d/zazubot-${{ matrix.app }},push-by-digest=true,name-canonical=true,push=true
+
+      - name: Export digest
+        run: |
+          mkdir -p /tmp/digests/${{ matrix.app }}
+          digest="${{ steps.docker_build.outputs.digest }}"
+          touch "/tmp/digests/${{ matrix.app }}/${digest#sha256:}"
+
+      - name: Upload digest
+        uses: actions/upload-artifact@v4
+        with:
+          name: digests-amd-${{ matrix.app }}
+          path: /tmp/digests/${{matrix.app}}/*
+          if-no-files-found: error
+          retention-days: 1
+
+  build-arm:
+    env:
+      DATABASE_URL: "postgresql://"
+    strategy:
+      matrix:
+        app: ["builder", "viewer"]
+    runs-on: buildjet-8vcpu-ubuntu-2204-arm
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v4
+
+      - name: Extract existing image metadata
+        id: image-meta
+        uses: docker/metadata-action@v4
+        with:
+          images: ahmedkhaled4d/zazubot-${{ matrix.app }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Build image
+        id: docker_build
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          labels: ${{ steps.image-meta.outputs.labels }}
+          platforms: linux/arm64
+          cache-from: type=gha,scope=${{ matrix.app }}-arm
+          cache-to: type=gha,scope=${{ matrix.app }}-arm,mode=max
+          build-args: |
+            SCOPE=${{ matrix.app }}
+          outputs: type=image,name=ahmedkhaled4d/zazubot-${{ matrix.app }},push-by-digest=true,name-canonical=true,push=true
+
+      - name: Export digest
+        run: |
+          mkdir -p /tmp/digests/${{ matrix.app }}
+          digest="${{ steps.docker_build.outputs.digest }}"
+          touch "/tmp/digests/${{ matrix.app }}/${digest#sha256:}"
+
+      - name: Upload digest
+        uses: actions/upload-artifact@v4
+        with:
+          name: digests-arm-${{ matrix.app }}
+          path: /tmp/digests/${{matrix.app}}/*
+          if-no-files-found: error
+          retention-days: 1
+
+  merge-and-push:
+    if: ${{ github.event_name != 'pull_request' }}
+    runs-on: ubuntu-latest
+    needs:
+      - build-amd
+      - build-arm
+    strategy:
+      matrix:
+        app: ["builder", "viewer"]
+    steps:
+      - name: Download AMD digests
+        uses: actions/download-artifact@v4
+        with:
+          name: digests-arm-${{ matrix.app }}
+          path: /tmp/digests/${{ matrix.app }}
+      - name: Download AMD digests
+        uses: actions/download-artifact@v4
+        with:
+          name: digests-amd-${{ matrix.app }}
+          path: /tmp/digests/${{ matrix.app }}
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
       - name: Docker meta
         id: meta
-        uses: docker/metadata-action@v5
+        uses: docker/metadata-action@v4
         with:
           images: ahmedkhaled4d/zazubot-${{ matrix.app }}
           tags: |
             type=ref,event=branch
-            type=ref,event=pr
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
-            type=sha
-
-      - name: Build and push
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          platforms: ${{ matrix.platform }}
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
-          build-args: |
-            SCOPE=${{ matrix.app }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-
-  create-manifest:
-    strategy:
-      matrix:
-        app: ["builder", "viewer"]
-    needs: build-and-push
-    runs-on: ubuntu-latest
-    steps:
+            type=semver,pattern={{major}}
+            next
       - name: Login to Docker Hub
-        uses: docker/login-action@v3
+        uses: docker/login-action@v2
         with:
-          username: ${{ env.DOCKER_USERNAME }}
-          password: ${{ env.DOCKER_PASSWORD }}
-
-      - name: Create and push multi-arch manifest
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+      - name: Create manifest list and push
+        working-directory: /tmp/digests/${{ matrix.app }}
         run: |
-          # Create multi-arch manifest
-          docker manifest create ahmedkhaled4d/zazubot-${{ matrix.app }}:${{ github.ref_name }} \
-            ahmedkhaled4d/zazubot-${{ matrix.app }}:${{ github.ref_name }}-amd64 \
-            ahmedkhaled4d/zazubot-${{ matrix.app }}:${{ github.ref_name }}-arm64
-
-          # Push the manifest
-          docker manifest push ahmedkhaled4d/zazubot-${{ matrix.app }}:${{ github.ref_name }}
+          docker buildx imagetools create $(jq -cr '.tags | map("-t " + .) | join(" ")' <<< "$DOCKER_METADATA_OUTPUT_JSON") \
+            $(printf 'ahmedkhaled4d/zazubot-${{ matrix.app }}@sha256:%s ' *)
+      - name: Inspect image
+        run: |
+          docker buildx imagetools inspect ahmedkhaled4d/zazubot-${{ matrix.app }}:${{ steps.meta.outputs.version }}
 
   create-release:
-    if: startsWith(github.ref, 'refs/tags/v')
-    needs: create-manifest
+    name: Create Release
     runs-on: ubuntu-latest
+    needs: merge-and-push
+    if: startsWith(github.ref, 'refs/tags/v')
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
-      - name: Create GitHub Release
-        uses: softprops/action-gh-release@v1
+      - name: Extract body from changelog
+        run: |
+          NEW_VERSION=$(echo '${{ github.ref }}' | sed 's/refs\/tags\/v//')
+          echo $NEW_VERSION
+          sed -n -e "/## ${NEW_VERSION}/,/<a/ p" ./CHANGELOG.md | sed -e '1,2d' | sed -e '$d' | sed -e '$d' > extractedBody.md
+      - name: Create Release
+        uses: ncipollo/release-action@v1
         with:
-          generate_release_notes: true
+          token: ${{ secrets.GITHUB_TOKEN }}
+          bodyFile: "extractedBody.md"

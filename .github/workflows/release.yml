@@ -2,7 +2,7 @@ name: Release new zazubot version
 
 on:
   push:
-    tags: ["v*", "next"]
+    branchs: ["main"]
 
 jobs:
   build-amd:

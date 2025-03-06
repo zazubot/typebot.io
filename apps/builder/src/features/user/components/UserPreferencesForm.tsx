@@ -140,7 +140,7 @@ export const UserPreferencesForm = () => {
         placement="top-end"
       >
         <SwitchWithRelatedSettings
-          label="Generate groups title with AI"
+          label={t("account.preferences.groupTitlesAutoGeneration.label")}
           initialValue={user?.groupTitlesAutoGeneration?.isEnabled}
           onCheckChange={(isEnabled) => {
             updateGroupTitlesGenParams({ isEnabled });

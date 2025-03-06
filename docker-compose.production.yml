@@ -21,9 +21,6 @@ services:
       virtual.host: "app.zazubot.com" # change to your domain
       virtual.port: "3000"
       virtual.tls-email: "admin@example.com" # change to your email
-    depends_on:
-      typebot-db:
-        condition: service_healthy
     restart: always
     extra_hosts:
       - "host.docker.internal:host-gateway"
@@ -42,9 +39,6 @@ services:
       # Necessary to enable message streaming
       virtual.proxy.directives: |
         flush_interval -1
-    depends_on:
-      typebot-db:
-        condition: service_healthy
     restart: always
     # See https://docs.typebot.io/self-hosting/configuration for more configuration options
     env_file:

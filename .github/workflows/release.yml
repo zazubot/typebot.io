@@ -72,7 +72,7 @@ jobs:
       #   with:
       #     name: digests-arm-${{ matrix.app }}
       #     path: /tmp/digests/${{ matrix.app }}
-      - name: Download AMD digests
+      - name: Download AMD digests.
         uses: actions/download-artifact@v4
         with:
           name: digests-amd-${{ matrix.app }}

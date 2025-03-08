@@ -2,7 +2,7 @@ name: Release new zazubot version
 
 on:
   push:
-    branchs: ["latest"]
+    branchs: ["next"]
 
 jobs:
   build-amd:

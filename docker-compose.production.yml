@@ -24,7 +24,7 @@ services:
     restart: always
     extra_hosts:
       - "host.docker.internal:host-gateway"
-    # See https://docs.typebot.io/self-hosting/configuration for more configuration options
+    # See https://docs.zazubot.com/self-hosting/configuration for more configuration options
     env_file:
       - .env
   typebot-viewer:
@@ -40,7 +40,7 @@ services:
       virtual.proxy.directives: |
         flush_interval -1
     restart: always
-    # See https://docs.typebot.io/self-hosting/configuration for more configuration options
+    # See https://docs.zazubot.com/self-hosting/configuration for more configuration options
     env_file:
       - .env
   mail:

@@ -4,7 +4,7 @@ services:
     restart: always
     volumes:
       - /var/run/docker.sock:/tmp/docker.sock:ro
-      - /home/ubuntu/zazubot/.typebot/caddy-certificates:/data/caddy
+      - /home/ubuntu/docker-cache/.typebot/caddy-certificates:/data/caddy
     ports:
       - "80:80"
       - "443:443"

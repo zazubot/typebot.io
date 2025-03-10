@@ -111,20 +111,20 @@ export const sendMessageV2 = publicProcedure
                 },
         });
 
-        // if (startParams.isPreview || typeof startParams.typebot !== "string") {
-        //   if (
-        //     newSessionState.allowedOrigins &&
-        //     newSessionState.allowedOrigins.length > 0
-        //   ) {
-        //     if (origin && newSessionState.allowedOrigins.includes(origin))
-        //       res.setHeader("Access-Control-Allow-Origin", origin);
-        //     else
-        //       res.setHeader(
-        //         "Access-Control-Allow-Origin",
-        //         newSessionState.allowedOrigins[0],
-        //       );
-        //   }
-        // }
+        if (startParams.isPreview || typeof startParams.typebot !== "string") {
+          if (
+            newSessionState.allowedOrigins &&
+            newSessionState.allowedOrigins.length > 0
+          ) {
+            if (origin && newSessionState.allowedOrigins.includes(origin))
+              res.setHeader("Access-Control-Allow-Origin", origin);
+            else
+              res.setHeader(
+                "Access-Control-Allow-Origin",
+                newSessionState.allowedOrigins[0],
+              );
+          }
+        }
 
         const allLogs = clientLogs ? [...(logs ?? []), ...clientLogs] : logs;
 
@@ -166,18 +166,18 @@ export const sendMessageV2 = publicProcedure
           clientSideActions,
         };
       } else {
-        // if (
-        //   session.state.allowedOrigins &&
-        //   session.state.allowedOrigins.length > 0
-        // ) {
-        //   if (origin && session.state.allowedOrigins.includes(origin))
-        //     res.setHeader("Access-Control-Allow-Origin", origin);
-        //   else
-        //     res.setHeader(
-        //       "Access-Control-Allow-Origin",
-        //       session.state.allowedOrigins[0],
-        //     );
-        // }
+        if (
+          session.state.allowedOrigins &&
+          session.state.allowedOrigins.length > 0
+        ) {
+          if (origin && session.state.allowedOrigins.includes(origin))
+            res.setHeader("Access-Control-Allow-Origin", origin);
+          else
+            res.setHeader(
+              "Access-Control-Allow-Origin",
+              session.state.allowedOrigins[0],
+            );
+        }
         const {
           messages,
           input,

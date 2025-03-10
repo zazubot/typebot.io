@@ -14,7 +14,7 @@ export const nocodbBlock = createBlock({
   actions: [searchRecords, createRecord, updateExistingRecord],
   docsUrl: "https://docs.zazubot.com/editor/blocks/integrations/nocodb",
   onboarding: {
-    youtubeId: "ViKETDQ8Sfg",
+    youtubeId: "cRLFeQNrTwM",
     deployedAt: new Date("2023-06-20"),
   },
 });

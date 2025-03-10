@@ -18,7 +18,7 @@
         "operationId": "getLinkedTypebots",
         "summary": "Get linked typebots",
         "tags": [
-          "Typebot"
+          "ZazuBot"
         ],
         "security": [
           {
@@ -3000,7 +3000,7 @@
         "operationId": "typebot-createTypebot",
         "summary": "Create a typebot",
         "tags": [
-          "Typebot"
+          "ZazuBot"
         ],
         "security": [
           {
@@ -3347,7 +3347,7 @@
         "operationId": "typebot-listTypebots",
         "summary": "List typebots",
         "tags": [
-          "Typebot"
+          "ZazuBot"
         ],
         "security": [
           {
@@ -3482,7 +3482,7 @@
         "operationId": "typebot-updateTypebot",
         "summary": "Update a typebot",
         "tags": [
-          "Typebot"
+          "ZazuBot"
         ],
         "security": [
           {
@@ -3786,7 +3786,7 @@
                             "type": "string"
                           }
                         },
-                        "title": "Typebot V6"
+                        "title": "ZazuBot V6"
                       },
                       {
                         "type": "object",
@@ -5575,7 +5575,7 @@
                             "type": "string"
                           }
                         },
-                        "title": "Typebot V5"
+                        "title": "ZazuBot V5"
                       }
                     ]
                   }
@@ -5662,7 +5662,7 @@
         "operationId": "typebot-getTypebot",
         "summary": "Get a typebot",
         "tags": [
-          "Typebot"
+          "ZazuBot"
         ],
         "security": [
           {
@@ -5792,7 +5792,7 @@
         "operationId": "typebot-deleteTypebot",
         "summary": "Delete a typebot",
         "tags": [
-          "Typebot"
+          "ZazuBot"
         ],
         "security": [
           {
@@ -5891,7 +5891,7 @@
         "operationId": "typebot-getPublishedTypebot",
         "summary": "Get published typebot",
         "tags": [
-          "Typebot"
+          "ZazuBot"
         ],
         "security": [
           {
@@ -6035,7 +6035,7 @@
         "operationId": "typebot-publishTypebot",
         "summary": "Publish a typebot",
         "tags": [
-          "Typebot"
+          "ZazuBot"
         ],
         "security": [
           {
@@ -6124,7 +6124,7 @@
         "operationId": "typebot-unpublishTypebot",
         "summary": "Unpublish a typebot",
         "tags": [
-          "Typebot"
+          "ZazuBot"
         ],
         "security": [
           {
@@ -6213,7 +6213,7 @@
         "operationId": "typebot-importTypebot",
         "summary": "Import a typebot",
         "tags": [
-          "Typebot"
+          "ZazuBot"
         ],
         "security": [
           {
@@ -6505,7 +6505,7 @@
                           "icon",
                           "folderId"
                         ],
-                        "title": "Typebot V6"
+                        "title": "ZazuBot V6"
                       },
                       {
                         "type": "object",
@@ -8290,7 +8290,7 @@
                           "icon",
                           "folderId"
                         ],
-                        "title": "Typebot V5"
+                        "title": "ZazuBot V5"
                       }
                     ]
                   },
@@ -14615,7 +14615,7 @@
           "type": {
             "type": "string",
             "enum": [
-              "Typebot link"
+              "ZazuBot link"
             ]
           },
           "options": {
@@ -14637,7 +14637,7 @@
           "id",
           "type"
         ],
-        "title": "Typebot link"
+        "title": "ZazuBot link"
       },
       "waitLogic": {
         "type": "object",
@@ -15208,7 +15208,7 @@
                       "Code": "#/components/schemas/scriptLogic",
                       "Redirect": "#/components/schemas/redirectLogic",
                       "Set variable": "#/components/schemas/setVariableLogic",
-                      "Typebot link": "#/components/schemas/typebotLinkLogic",
+                      "ZazuBot link": "#/components/schemas/typebotLinkLogic",
                       "Wait": "#/components/schemas/waitLogic",
                       "Jump": "#/components/schemas/jumpLogic",
                       "Condition": "#/components/schemas/conditionLogic",
@@ -21851,7 +21851,7 @@
           "whatsAppCredentialsId",
           "riskLevel"
         ],
-        "title": "Typebot V6"
+        "title": "ZazuBot V6"
       },
       "typebotV5": {
         "type": "object",
@@ -23676,7 +23676,7 @@
           "whatsAppCredentialsId",
           "riskLevel"
         ],
-        "title": "Typebot V5"
+        "title": "ZazuBot V5"
       },
       "publicTypebotV6": {
         "type": "object",

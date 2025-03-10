@@ -2,7 +2,7 @@
   "id": "8hASqMTjwFVzB32vRcVND5",
   "createdAt": "2022-02-05T06:21:16.522Z",
   "updatedAt": "2022-02-05T06:21:16.522Z",
-  "name": "My typebot",
+  "name": "My zazubot",
   "folderId": null,
   "groups": [
     {
@@ -32,7 +32,7 @@
                 "type": "p",
                 "children": [
                   { "text": "Welcome to " },
-                  { "bold": true, "text": "AA" },
+                  { "bold": true, "text": "ZazuBot" },
                   { "text": " (Awesome Agency)" }
                 ]
               }

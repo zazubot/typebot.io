@@ -42,22 +42,6 @@ services:
     # See https://docs.zazubot.com/self-hosting/configuration for more configuration options
     env_file:
       - .env
-  typebot-docs:
-    build:
-      context: .
-      args:
-        - SCOPE=docs
-    labels:
-      virtual.host: "docs.zazubot.com" # change to your domain
-      virtual.port: "3000"
-      virtual.tls-email: "info@zazubot.com" # change to your email
-      # Necessary to enable message streaming
-      virtual.proxy.directives: |
-        flush_interval -1
-    restart: always
-    # See https://docs.zazubot.com/self-hosting/configuration for more configuration options
-    env_file:
-      - .env
   mail:
     image: bytemark/smtp
     restart: always
